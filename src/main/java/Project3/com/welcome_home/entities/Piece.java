@@ -1,8 +1,6 @@
 package Project3.com.welcome_home.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 @IdClass(PieceId.class)
@@ -12,6 +10,7 @@ public class Piece {
     private Integer itemID;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer pieceNum;
 
     private String pDescription;
@@ -23,6 +22,8 @@ public class Piece {
     // Foreign key references (if needed)
     private Integer roomNum;
     private Integer shelfNum;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Location location;
 
     // Default constructor
     public Piece() {}
@@ -85,18 +86,26 @@ public class Piece {
     }
 
     public Integer getRoomNum() {
-        return roomNum;
+        return this.location.getRoomNum();
     }
 
     public void setRoomNum(Integer roomNum) {
-        this.roomNum = roomNum;
+        this.location.setRoomNum(roomNum);
     }
 
     public Integer getShelfNum() {
-        return shelfNum;
+        return this.location.getShelfNum();
     }
 
     public void setShelfNum(Integer shelfNum) {
-        this.shelfNum = shelfNum;
+        this.location.setShelfNum(shelfNum);
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }
