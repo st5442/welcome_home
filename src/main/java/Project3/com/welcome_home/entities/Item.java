@@ -9,7 +9,7 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ItemID", nullable = false)
-    private Integer itemID;
+    private Integer ItemID;
 
     @Column(name = "iDescription")
     private String iDescription;
@@ -29,6 +29,12 @@ public class Item {
     @Column(name = "material")
     private String material;
 
+    @Column(name = "mainCategory", insertable = false, updatable = false)
+    private String mainCategory;
+
+    @Column(name = "subCategory", insertable = false, updatable = false)
+    private String subCategory;
+
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "mainCategory", referencedColumnName = "mainCategory", nullable = false),
@@ -38,11 +44,11 @@ public class Item {
 
     // Getters and Setters
     public Integer getItemID() {
-        return itemID;
+        return ItemID;
     }
 
     public void setItemID(Integer itemID) {
-        this.itemID = itemID;
+        this.ItemID = itemID;
     }
 
     public String getiDescription() {

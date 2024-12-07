@@ -3,6 +3,7 @@ package Project3.com.welcome_home.services;
 import Project3.com.welcome_home.entities.Item;
 import Project3.com.welcome_home.entities.Location;
 import Project3.com.welcome_home.entities.LocationId;
+import Project3.com.welcome_home.model.Query2;
 import Project3.com.welcome_home.repositories.ItemRepository;
 import Project3.com.welcome_home.repositories.LocationRepository;
 import org.springframework.stereotype.Service;
@@ -41,11 +42,11 @@ public class LocationService {
         locationRepository.deleteById(id);
     }
 
-    public List<Object> getLocationsByItemId(Integer itemId) throws Exception {
-        Optional<Item> item = itemRepository.findById(itemId);
-        Optional<List<Object>> optionalLocations = null;
+    public List<Query2> getLocationsByItemId(Integer itemId) throws Exception {
+        Optional<Item> item = itemRepository.findItemByItemID(itemId);
+        Optional<List<Query2>> optionalLocations = null;
         if(item.isPresent()) {
-            optionalLocations = locationRepository.findLocationsByItemId(itemId);
+            optionalLocations = locationRepository.findLocationsCustomByItemId(itemId);
         } else {
             throw new Exception("No item with this itemID present.");
         }

@@ -1,6 +1,7 @@
 package Project3.com.welcome_home.controllers;
 
 import Project3.com.welcome_home.entities.Location;
+import Project3.com.welcome_home.model.Query2;
 import Project3.com.welcome_home.services.LocationService;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class LocationController {
     }
 
     @GetMapping("/item/{itemId}")
-    public List<Object> getLocation(@PathVariable Integer itemId) throws Exception {
+    public List<Query2> getLocation(@PathVariable Integer itemId) throws Exception {
         return locationService.getLocationsByItemId(itemId);
     }
 }

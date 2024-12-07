@@ -7,12 +7,16 @@ import jakarta.persistence.*;
 public class Location {
 
     @Id
+    @Column(name = "roomNum")
     private int roomNum;
 
     @Id
+    @Column(name = "shelfNum")
     private int shelfNum;
 
+    @Column(name = "shelf")
     private String shelf;
+    @Column(name = "shelfDescription")
     private String shelfDescription;
 
     public Location() {
