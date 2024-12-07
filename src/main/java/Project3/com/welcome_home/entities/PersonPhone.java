@@ -3,25 +3,24 @@ package Project3.com.welcome_home.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "PersonPhone")
+@IdClass(PersonPhoneId.class)
 public class PersonPhone {
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "userName", referencedColumnName = "userName", nullable = false)
-    private Person person;
+    private String userName;
 
     @Id
-    @Column(name = "phone", nullable = false)
     private String phone;
 
-    // Getters and Setters
-    public Person getPerson() {
-        return person;
+    private String someOtherField; // Example field
+
+    // Getters and setters
+    public String getUserName() {
+        return userName;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPhone() {
@@ -30,5 +29,13 @@ public class PersonPhone {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getSomeOtherField() {
+        return someOtherField;
+    }
+
+    public void setSomeOtherField(String someOtherField) {
+        this.someOtherField = someOtherField;
     }
 }

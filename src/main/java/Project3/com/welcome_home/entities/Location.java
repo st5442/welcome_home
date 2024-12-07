@@ -3,37 +3,41 @@ package Project3.com.welcome_home.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Location")
+@IdClass(LocationId.class)
 public class Location {
 
     @Id
-    @Column(name = "roomNum", nullable = false)
-    private Integer roomNum;
+    private int roomNum;
 
     @Id
-    @Column(name = "shelfNum", nullable = false)
-    private Integer shelfNum;
+    private int shelfNum;
 
-    @Column(name = "shelf")
     private String shelf;
-
-    @Column(name = "shelfDescription")
     private String shelfDescription;
 
-    // Getters and Setters
-    public Integer getRoomNum() {
+    public Location() {
+    }
+
+    public Location(int roomNum, int shelfNum, String shelf, String shelfDescription) {
+        this.roomNum = roomNum;
+        this.shelfNum = shelfNum;
+        this.shelf = shelf;
+        this.shelfDescription = shelfDescription;
+    }
+
+    public int getRoomNum() {
         return roomNum;
     }
 
-    public void setRoomNum(Integer roomNum) {
+    public void setRoomNum(int roomNum) {
         this.roomNum = roomNum;
     }
 
-    public Integer getShelfNum() {
+    public int getShelfNum() {
         return shelfNum;
     }
 
-    public void setShelfNum(Integer shelfNum) {
+    public void setShelfNum(int shelfNum) {
         this.shelfNum = shelfNum;
     }
 

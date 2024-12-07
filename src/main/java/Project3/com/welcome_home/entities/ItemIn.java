@@ -1,25 +1,56 @@
 package Project3.com.welcome_home.entities;
 
 import jakarta.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "ItemIn")
-public class ItemIn {
+@IdClass(ItemInId.class)
+public class ItemIn implements Serializable {
 
     @Id
+    private Integer itemID;
+
+    @Id
+    private Integer orderID;
+
     @ManyToOne
-    @JoinColumn(name = "ItemID", referencedColumnName = "ItemID", nullable = false)
+    @JoinColumn(name = "itemID", insertable = false, updatable = false)
     private Item item;
 
-    @Id
     @ManyToOne
-    @JoinColumn(name = "orderID", referencedColumnName = "orderID", nullable = false)
+    @JoinColumn(name = "orderID", insertable = false, updatable = false)
     private Ordered ordered;
 
-    @Column(name = "found", columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean found = false;
+    private Boolean found;
+
+    // Default constructor
+    public ItemIn() {}
 
     // Getters and Setters
+    public Integer getItemID() {
+        return itemID;
+    }
+
+    public void setItemID(Integer itemID) {
+        this.itemID = itemID;
+    }
+
+    public Integer getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(Integer orderID) {
+        this.orderID = orderID;
+    }
+
+    public Boolean getFound() {
+        return found;
+    }
+
+    public void setFound(Boolean found) {
+        this.found = found;
+    }
+
     public Item getItem() {
         return item;
     }
@@ -34,13 +65,5 @@ public class ItemIn {
 
     public void setOrdered(Ordered ordered) {
         this.ordered = ordered;
-    }
-
-    public Boolean getFound() {
-        return found;
-    }
-
-    public void setFound(Boolean found) {
-        this.found = found;
     }
 }

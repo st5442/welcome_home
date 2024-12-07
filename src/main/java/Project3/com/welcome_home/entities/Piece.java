@@ -1,49 +1,39 @@
 package Project3.com.welcome_home.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "Piece")
+@IdClass(PieceId.class)
 public class Piece {
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "ItemID", referencedColumnName = "ItemID", nullable = false)
-    private Item item;
+    private Integer itemID;
 
     @Id
-    @Column(name = "pieceNum", nullable = false)
     private Integer pieceNum;
 
-    @Column(name = "pDescription")
     private String pDescription;
-
-    @Column(name = "length", nullable = false)
     private Integer length;
-
-    @Column(name = "width", nullable = false)
     private Integer width;
-
-    @Column(name = "height", nullable = false)
     private Integer height;
-
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "roomNum", referencedColumnName = "roomNum", nullable = false),
-            @JoinColumn(name = "shelfNum", referencedColumnName = "shelfNum", nullable = false)
-    })
-    private Location location;
-
-    @Column(name = "pNotes")
     private String pNotes;
 
+    // Foreign key references (if needed)
+    private Integer roomNum;
+    private Integer shelfNum;
+
+    // Default constructor
+    public Piece() {}
+
     // Getters and Setters
-    public Item getItem() {
-        return item;
+    public Integer getItemID() {
+        return itemID;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setItemID(Integer itemID) {
+        this.itemID = itemID;
     }
 
     public Integer getPieceNum() {
@@ -86,19 +76,27 @@ public class Piece {
         this.height = height;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public String getpNotes() {
         return pNotes;
     }
 
     public void setpNotes(String pNotes) {
         this.pNotes = pNotes;
+    }
+
+    public Integer getRoomNum() {
+        return roomNum;
+    }
+
+    public void setRoomNum(Integer roomNum) {
+        this.roomNum = roomNum;
+    }
+
+    public Integer getShelfNum() {
+        return shelfNum;
+    }
+
+    public void setShelfNum(Integer shelfNum) {
+        this.shelfNum = shelfNum;
     }
 }

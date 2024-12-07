@@ -1,10 +1,12 @@
 package Project3.com.welcome_home.services;
 
 import Project3.com.welcome_home.entities.Location;
+import Project3.com.welcome_home.entities.LocationId;
 import Project3.com.welcome_home.repositories.LocationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LocationService {
@@ -19,11 +21,19 @@ public class LocationService {
         return locationRepository.findAll();
     }
 
+    public Optional<Location> getLocation(int roomNum, int shelfNum) {
+        // Create a LocationId object
+        LocationId id = new LocationId(roomNum, shelfNum);
+        return locationRepository.findById(id);
+    }
+
     public Location saveLocation(Location location) {
         return locationRepository.save(location);
     }
 
-    public Location getLocation(Integer roomNum, Integer shelfNum) {
-        return locationRepository.findById(new LocationId(roomNum, shelfNum)).orElse(null);
+    public void deleteLocation(int roomNum, int shelfNum) {
+        // Create a LocationId object
+        LocationId id = new LocationId(roomNum, shelfNum);
+        locationRepository.deleteById(id);
     }
 }

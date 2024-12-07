@@ -5,6 +5,7 @@ import Project3.com.welcome_home.services.ActService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/acts")
@@ -21,13 +22,18 @@ public class ActController {
         return actService.getAllActs();
     }
 
+    @GetMapping("/{userName}/{roleID}")
+    public Optional<Act> getAct(@PathVariable String userName, @PathVariable String roleID) {
+        return actService.getAct(userName, roleID);
+    }
+
     @PostMapping
     public Act createAct(@RequestBody Act act) {
         return actService.saveAct(act);
     }
 
-    @GetMapping("/{userName}/{roleID}")
-    public Act getAct(@PathVariable String userName, @PathVariable String roleID) {
-        return actService.getAct(userName, roleID);
+    @DeleteMapping("/{userName}/{roleID}")
+    public void deleteAct(@PathVariable String userName, @PathVariable String roleID) {
+        actService.deleteAct(userName, roleID);
     }
 }

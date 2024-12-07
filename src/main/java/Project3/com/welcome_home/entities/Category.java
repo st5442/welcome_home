@@ -1,21 +1,23 @@
 package Project3.com.welcome_home.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Id;
 
 @Entity
-@Table(name = "Category")
+@IdClass(CategoryId.class)
 public class Category {
 
     @Id
-    @Column(name = "mainCategory", nullable = false)
     private String mainCategory;
 
     @Id
-    @Column(name = "subCategory", nullable = false)
     private String subCategory;
 
-    @Column(name = "catNotes")
     private String catNotes;
+
+    // Default constructor
+    public Category() {}
 
     // Getters and Setters
     public String getMainCategory() {

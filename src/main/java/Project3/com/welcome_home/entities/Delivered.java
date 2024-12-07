@@ -1,42 +1,39 @@
 package Project3.com.welcome_home.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-@Table(name = "Delivered")
 public class Delivered {
 
-    @Id
+    @EmbeddedId
+    private DeliveredId deliveredId;
+
+    private String status;
+    private String date;
+
     @ManyToOne
-    @JoinColumn(name = "userName", referencedColumnName = "userName", nullable = false)
     private Person person;
 
-    @Id
     @ManyToOne
-    @JoinColumn(name = "orderID", referencedColumnName = "orderID", nullable = false)
     private Ordered ordered;
 
-    @Column(name = "status", nullable = false)
-    private String status;
+    public Delivered() {}
 
-    @Column(name = "date", nullable = false)
-    private java.sql.Date date;
+    public Delivered(DeliveredId deliveredId, String status, String date) {
+        this.deliveredId = deliveredId;
+        this.status = status;
+        this.date = date;
+    }
 
     // Getters and Setters
-    public Person getPerson() {
-        return person;
+    public DeliveredId getDeliveredId() {
+        return deliveredId;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public Ordered getOrdered() {
-        return ordered;
-    }
-
-    public void setOrdered(Ordered ordered) {
-        this.ordered = ordered;
+    public void setDeliveredId(DeliveredId deliveredId) {
+        this.deliveredId = deliveredId;
     }
 
     public String getStatus() {
@@ -47,11 +44,11 @@ public class Delivered {
         this.status = status;
     }
 
-    public java.sql.Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(java.sql.Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }

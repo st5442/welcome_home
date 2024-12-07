@@ -1,10 +1,11 @@
 package Project3.com.welcome_home.services;
 
 import Project3.com.welcome_home.entities.Delivered;
+import Project3.com.welcome_home.entities.DeliveredId;
 import Project3.com.welcome_home.repositories.DeliveredRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DeliveredService {
@@ -15,15 +16,11 @@ public class DeliveredService {
         this.deliveredRepository = deliveredRepository;
     }
 
-    public List<Delivered> getAllDeliveredItems() {
-        return deliveredRepository.findAll();
+    public Optional<Delivered> getDelivered(DeliveredId deliveredId) {
+        return deliveredRepository.findById(deliveredId);
     }
 
     public Delivered saveDelivered(Delivered delivered) {
         return deliveredRepository.save(delivered);
-    }
-
-    public Delivered getDelivered(String userName, Integer orderId) {
-        return deliveredRepository.findById(new DeliveredId(userName, orderId)).orElse(null);
     }
 }

@@ -1,10 +1,12 @@
 package Project3.com.welcome_home.services;
 
 import Project3.com.welcome_home.entities.Piece;
+import Project3.com.welcome_home.entities.PieceId;
 import Project3.com.welcome_home.repositories.PieceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PieceService {
@@ -19,11 +21,17 @@ public class PieceService {
         return pieceRepository.findAll();
     }
 
+    public Optional<Piece> getPiece(Integer itemID, Integer pieceNum) {
+        PieceId id = new PieceId(itemID, pieceNum);
+        return pieceRepository.findById(id);
+    }
+
     public Piece savePiece(Piece piece) {
         return pieceRepository.save(piece);
     }
 
-    public Piece getPiece(Integer itemId, Integer pieceNum) {
-        return pieceRepository.findById(new PieceId(itemId, pieceNum)).orElse(null);
+    public void deletePiece(Integer itemID, Integer pieceNum) {
+        PieceId id = new PieceId(itemID, pieceNum);
+        pieceRepository.deleteById(id);
     }
 }

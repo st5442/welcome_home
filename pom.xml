@@ -8,6 +8,12 @@
 		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+	</repositories>
 	<groupId>Project3.com</groupId>
 	<artifactId>welcome-home</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -76,6 +82,17 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>3.1.0</version> <!-- Latest version -->
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.6.10.Final</version> <!-- Ensure the version is compatible with Spring Boot -->
+		</dependency>
+
 	</dependencies>
 
 	<build>

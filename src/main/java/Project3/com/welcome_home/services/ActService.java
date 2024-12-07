@@ -1,10 +1,12 @@
 package Project3.com.welcome_home.services;
 
 import Project3.com.welcome_home.entities.Act;
+import Project3.com.welcome_home.entities.ActId;
 import Project3.com.welcome_home.repositories.ActRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ActService {
@@ -19,11 +21,19 @@ public class ActService {
         return actRepository.findAll();
     }
 
+    public Optional<Act> getAct(String userName, String roleID) {
+        // Create ActId object
+        ActId id = new ActId(userName, roleID);
+        return actRepository.findById(id);
+    }
+
     public Act saveAct(Act act) {
         return actRepository.save(act);
     }
 
-    public Act getAct(String userName, String roleID) {
-        return actRepository.findById(new ActId(userName, roleID)).orElse(null);
+    public void deleteAct(String userName, String roleID) {
+        // Create ActId object
+        ActId id = new ActId(userName, roleID);
+        actRepository.deleteById(id);
     }
 }

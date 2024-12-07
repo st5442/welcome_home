@@ -5,6 +5,7 @@ import Project3.com.welcome_home.services.LocationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/locations")
@@ -21,13 +22,18 @@ public class LocationController {
         return locationService.getAllLocations();
     }
 
+    @GetMapping("/{roomNum}/{shelfNum}")
+    public Optional<Location> getLocation(@PathVariable int roomNum, @PathVariable int shelfNum) {
+        return locationService.getLocation(roomNum, shelfNum);
+    }
+
     @PostMapping
     public Location createLocation(@RequestBody Location location) {
         return locationService.saveLocation(location);
     }
 
-    @GetMapping("/{roomNum}/{shelfNum}")
-    public Location getLocation(@PathVariable Integer roomNum, @PathVariable Integer shelfNum) {
-        return locationService.getLocation(roomNum, shelfNum);
+    @DeleteMapping("/{roomNum}/{shelfNum}")
+    public void deleteLocation(@PathVariable int roomNum, @PathVariable int shelfNum) {
+        locationService.deleteLocation(roomNum, shelfNum);
     }
 }

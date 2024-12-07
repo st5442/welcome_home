@@ -5,9 +5,10 @@ import Project3.com.welcome_home.services.PersonPhoneService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/personPhones")
+@RequestMapping("/api/person-phones")
 public class PersonPhoneController {
 
     private final PersonPhoneService personPhoneService;
@@ -21,13 +22,18 @@ public class PersonPhoneController {
         return personPhoneService.getAllPersonPhones();
     }
 
+    @GetMapping("/{userName}/{phone}")
+    public Optional<PersonPhone> getPersonPhone(@PathVariable String userName, @PathVariable String phone) {
+        return personPhoneService.getPersonPhone(userName, phone);
+    }
+
     @PostMapping
     public PersonPhone createPersonPhone(@RequestBody PersonPhone personPhone) {
         return personPhoneService.savePersonPhone(personPhone);
     }
 
-    @GetMapping("/{userName}/{phone}")
-    public PersonPhone getPersonPhone(@PathVariable String userName, @PathVariable String phone) {
-        return personPhoneService.getPersonPhone(userName, phone);
+    @DeleteMapping("/{userName}/{phone}")
+    public void deletePersonPhone(@PathVariable String userName, @PathVariable String phone) {
+        personPhoneService.deletePersonPhone(userName, phone);
     }
 }

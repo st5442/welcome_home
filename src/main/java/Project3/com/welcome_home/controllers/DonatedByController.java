@@ -5,6 +5,7 @@ import Project3.com.welcome_home.services.DonatedByService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/donations")
@@ -21,13 +22,18 @@ public class DonatedByController {
         return donatedByService.getAllDonations();
     }
 
+    @GetMapping("/{itemID}/{userName}")
+    public Optional<DonatedBy> getDonation(@PathVariable Integer itemID, @PathVariable String userName) {
+        return donatedByService.getDonation(itemID, userName);
+    }
+
     @PostMapping
     public DonatedBy createDonation(@RequestBody DonatedBy donatedBy) {
         return donatedByService.saveDonation(donatedBy);
     }
 
-    @GetMapping("/{itemId}/{userName}")
-    public DonatedBy getDonation(@PathVariable Integer itemId, @PathVariable String userName) {
-        return donatedByService.getDonation(itemId, userName);
+    @DeleteMapping("/{itemID}/{userName}")
+    public void deleteDonation(@PathVariable Integer itemID, @PathVariable String userName) {
+        donatedByService.deleteDonation(itemID, userName);
     }
 }
