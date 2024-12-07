@@ -36,4 +36,9 @@ public class LocationController {
     public void deleteLocation(@PathVariable int roomNum, @PathVariable int shelfNum) {
         locationService.deleteLocation(roomNum, shelfNum);
     }
+
+    @GetMapping("/item/{itemId}")
+    public List<Object> getLocation(@PathVariable Integer itemId) throws Exception {
+        return locationService.getLocationsByItemId(itemId);
+    }
 }

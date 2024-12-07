@@ -1,7 +1,9 @@
 package Project3.com.welcome_home.services;
 
+import Project3.com.welcome_home.entities.Item;
 import Project3.com.welcome_home.entities.Location;
 import Project3.com.welcome_home.entities.LocationId;
+import Project3.com.welcome_home.repositories.ItemRepository;
 import Project3.com.welcome_home.repositories.LocationRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,11 @@ import java.util.Optional;
 public class LocationService {
 
     private final LocationRepository locationRepository;
+    private final ItemRepository itemRepository;
 
-    public LocationService(LocationRepository locationRepository) {
+    public LocationService(LocationRepository locationRepository, ItemRepository itemRepository) {
         this.locationRepository = locationRepository;
+        this.itemRepository = itemRepository = itemRepository;
     }
 
     public List<Location> getAllLocations() {
@@ -35,5 +39,22 @@ public class LocationService {
         // Create a LocationId object
         LocationId id = new LocationId(roomNum, shelfNum);
         locationRepository.deleteById(id);
+    }
+
+    public List<Object> getLocationsByItemId(Integer itemId) throws Exception {
+        Optional<Item> item = itemRepository.findById(itemId);
+        Optional<List<Object>> optionalLocations = null;
+        if(item.isPresent()) {
+            optionalLocations = locationRepository.findLocationsByItemId(itemId);
+        } else {
+            throw new Exception("No item with this itemID present.");
+        }
+
+        if(optionalLocations == null || optionalLocations.isEmpty()) {
+            throw new Exception("No locations found.");
+        }
+
+        return optionalLocations.get();
+
     }
 }
