@@ -8,13 +8,13 @@ import java.io.Serializable;
 public class ItemIn implements Serializable {
 
     @Id
-    private Integer itemID;
+    private Integer ItemId;
 
     @Id
     private Integer orderID;
 
     @ManyToOne
-    @JoinColumn(name = "itemID", insertable = false, updatable = false)
+    @JoinColumn(name = "ItemId", insertable = false, updatable = false)
     private Item item;
 
     @ManyToOne
@@ -28,11 +28,11 @@ public class ItemIn implements Serializable {
 
     // Getters and Setters
     public Integer getItemID() {
-        return itemID;
+        return ItemId;
     }
 
     public void setItemID(Integer itemID) {
-        this.itemID = itemID;
+        this.ItemId = itemID;
     }
 
     public Integer getOrderID() {

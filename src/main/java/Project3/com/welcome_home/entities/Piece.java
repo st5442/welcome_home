@@ -7,22 +7,39 @@ import jakarta.persistence.*;
 public class Piece {
 
     @Id
-    private Integer itemID;
+    @Column(name = "ItemID")
+    private Integer ItemID;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pieceNum")
     private Integer pieceNum;
 
+    @Column(name = "pDescription")
     private String pDescription;
+
+    @Column
     private Integer length;
+
+    @Column
     private Integer width;
+
+    @Column
     private Integer height;
+
+    @Column
     private String pNotes;
 
     // Foreign key references (if needed)
+    @Column(name = "roomNum", insertable = false, updatable = false)
     private Integer roomNum;
+    @Column(name = "shelfNum", insertable = false, updatable = false)
     private Integer shelfNum;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "roomNum", referencedColumnName = "roomNum", nullable = false),
+            @JoinColumn(name = "shelfNum", referencedColumnName = "shelfNum", nullable = false)
+    })
     private Location location;
 
     // Default constructor
@@ -30,11 +47,11 @@ public class Piece {
 
     // Getters and Setters
     public Integer getItemID() {
-        return itemID;
+        return ItemID;
     }
 
     public void setItemID(Integer itemID) {
-        this.itemID = itemID;
+        this.ItemID = itemID;
     }
 
     public Integer getPieceNum() {

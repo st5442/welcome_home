@@ -5,25 +5,25 @@ import java.util.Objects;
 
 public class ItemInId implements Serializable {
 
-    private Integer itemID;
+    private Integer ItemId;
     private Integer orderID;
 
     // Default constructor
     public ItemInId() {}
 
     // Constructor
-    public ItemInId(Integer itemID, Integer orderID) {
-        this.itemID = itemID;
+    public ItemInId(Integer ItemId, Integer orderID) {
+        this.ItemId = ItemId;
         this.orderID = orderID;
     }
 
     // Getters and Setters
     public Integer getItemID() {
-        return itemID;
+        return ItemId;
     }
 
     public void setItemID(Integer itemID) {
-        this.itemID = itemID;
+        this.ItemId = itemID;
     }
 
     public Integer getOrderID() {
@@ -40,12 +40,12 @@ public class ItemInId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemInId itemInId = (ItemInId) o;
-        return Objects.equals(itemID, itemInId.itemID) &&
+        return Objects.equals(ItemId, itemInId.ItemId) &&
                 Objects.equals(orderID, itemInId.orderID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemID, orderID);
+        return Objects.hash(ItemId, orderID);
     }
 }
