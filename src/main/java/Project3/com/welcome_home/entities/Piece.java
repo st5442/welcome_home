@@ -11,8 +11,8 @@ public class Piece {
     private Integer ItemID;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pieceNum")
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer pieceNum;
 
     @Column(name = "pDescription")

@@ -1,10 +1,12 @@
 package Project3.com.welcome_home.controllers;
 
 import Project3.com.welcome_home.entities.DonatedBy;
+import Project3.com.welcome_home.model.Donation;
 import Project3.com.welcome_home.services.DonatedByService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,5 +37,10 @@ public class DonatedByController {
     @DeleteMapping("/{itemID}/{userName}")
     public void deleteDonation(@PathVariable Integer itemID, @PathVariable String userName) {
         donatedByService.deleteDonation(itemID, userName);
+    }
+
+    @PostMapping("/madeADonation")
+    public Map<Boolean, String> madeADonation(@RequestBody Donation donation) throws Exception {
+        return donatedByService.madeADonation(donation);
     }
 }

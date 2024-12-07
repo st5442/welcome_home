@@ -5,6 +5,7 @@ import Project3.com.welcome_home.services.ActService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -35,5 +36,10 @@ public class ActController {
     @DeleteMapping("/{userName}/{roleID}")
     public void deleteAct(@PathVariable String userName, @PathVariable String roleID) {
         actService.deleteAct(userName, roleID);
+    }
+
+    @GetMapping("/user/{userName}")
+    public Map<Boolean, String> checkRegisteredUserAsDonor(@PathVariable String userName) {
+        return actService.checkRegisteredUserAsDonor(userName);
     }
 }
