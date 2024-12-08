@@ -53,4 +53,21 @@ public class OrderController {
             return "Error: " + e.getMessage();
         }
     }
+
+    @PostMapping("/prepare")
+    public ResponseEntity<String> prepareOrder(@RequestParam int orderID, @RequestParam String clientUsername) {
+        try {
+            // Call the service to prepare the order and return appropriate response
+            String response = orderService.prepareOrder(orderID, clientUsername);
+
+            if ("Order is ready for delivery.".equals(response)) {
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
 }
