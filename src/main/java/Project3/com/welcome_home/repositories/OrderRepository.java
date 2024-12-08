@@ -35,4 +35,46 @@ public class OrderRepository {
 
         return jdbcTemplate.queryForList(sql, orderID);
     }
+
+    public List<Map<String, Object>> findOrderItemsForClient(String userName) {
+        String sql = """
+                select 
+                    ii.ItemID,
+                    i.iDescription,
+                    ii.orderID 
+                from 
+                    itemin ii 
+                join 
+                        ordered o 
+                on 
+                    ii.orderID = o.orderID 
+                join 
+                        item i 
+                on 
+                    ii.ItemID = i.ItemID
+                where 
+                    o.client = ?;
+                """;
+        return jdbcTemplate.queryForList(sql, userName);
+    }
+
+    public List<Map<String, Object>> findOrderItemsForSupervisor(String userName) {
+        String sql = """
+                select 
+                    ii.ItemID, i.iDescription, ii.orderID 
+                from 
+                    itemin ii 
+                join 
+                        ordered o 
+                on 
+                    ii.orderID = o.orderID 
+                join 
+                        item i 
+                on 
+                    ii.ItemID = i.ItemID
+                where 
+                    o.supervisor = ?;
+                """;
+        return jdbcTemplate.queryForList(sql, userName);
+    }
 }
