@@ -40,10 +40,10 @@ public class AuthController {
 
     // Login endpoint
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String userName, @RequestParam String password, HttpSession session) {
+    public ResponseEntity<Map> loginUser(@RequestParam String userName, @RequestParam String password, HttpSession session) {
         // Fetch full person entity including password
         Optional<Person> personOptional = personService.findFullPersonByUserName(userName);
-
+        Map<String, String> body = new HashMap<>();
         // Check if the user exists
         if (personOptional.isPresent()) {
             Person person = personOptional.get();
@@ -54,14 +54,20 @@ public class AuthController {
                 session.setAttribute("user", person.getUserName());
                 session.setAttribute("role", person.getRoleID()); // assuming role is set in Person entity
                 this.session = session;
-                return ResponseEntity.ok("Login successful");
+
+                body.put("userName", person.getUserName());
+                body.put("role", person.getRoleID());
+                body.put("message", "Login successful");
+                return ResponseEntity.ok(body);
             } else {
                 // Incorrect password
-                return ResponseEntity.status(401).body("Invalid credentials");
+                body.put("message", "Invalid username or password");
+                return ResponseEntity.status(401).body(body);
             }
         } else {
             // User not found
-            return ResponseEntity.status(404).body("User not found");
+            body.put("message", "User not found");
+            return ResponseEntity.status(404).body(body);
         }
     }
 

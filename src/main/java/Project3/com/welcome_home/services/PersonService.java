@@ -35,6 +35,7 @@ public class PersonService {
         Person newPerson = new Person();
         if(personRepository.findByUserName(person.getUserName()).isPresent()) {
             map.put(false, "Username already exists");
+            return map;
         }
         newPerson.setUserName(person.getUserName());
         newPerson.setPassword(passwordEncoder.encode(person.getPassword()));  // Hash the password before saving
