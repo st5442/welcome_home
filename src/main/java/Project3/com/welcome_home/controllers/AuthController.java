@@ -1,10 +1,15 @@
 package Project3.com.welcome_home.controllers;
 
 import Project3.com.welcome_home.entities.Person;
+import Project3.com.welcome_home.model.RegisterPersonDT;
 import Project3.com.welcome_home.services.PersonService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -13,15 +18,24 @@ public class AuthController {
 
     private final PersonService personService;
 
+    public HttpSession getSession() {
+        return this.session;
+    }
+
+    private HttpSession session;
+
     public AuthController(PersonService personService) {
         this.personService = personService;
     }
 
     // Register a new user
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody Person person) {
-        personService.registerUser(person);
-        return ResponseEntity.ok("User registered successfully");
+    public ResponseEntity<String> registerUser(@RequestBody RegisterPersonDT person) {
+        Map<Boolean, String> map = personService.registerUser(person);
+        if(map.containsKey(true)) {
+            return ResponseEntity.ok("User registered successfully");
+        }
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map.get(false));
     }
 
     // Login endpoint
@@ -39,7 +53,7 @@ public class AuthController {
                 // Successful login, create session attributes
                 session.setAttribute("user", person.getUserName());
                 session.setAttribute("role", person.getRoleID()); // assuming role is set in Person entity
-
+                this.session = session;
                 return ResponseEntity.ok("Login successful");
             } else {
                 // Incorrect password
@@ -55,7 +69,8 @@ public class AuthController {
     // Logout the user
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
-        session.invalidate();  // Destroy session
+        session.invalidate();
+        this.session = session;// Destroy session
         return ResponseEntity.ok("Logged out successfully");
     }
 }
