@@ -9,6 +9,7 @@ import Project3.com.welcome_home.repositories.RoleRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -30,26 +31,36 @@ public class PersonService {
     }
 
     // Register a user (salt and hash the password)
+    @Transactional
     public Map<Boolean, String> registerUser(RegisterPersonDT person) {
-        HashMap map = new HashMap<Boolean, String>();
-        Person newPerson = new Person();
-        if(personRepository.findByUserName(person.getUserName()).isPresent()) {
+        HashMap<Boolean, String> map = new HashMap<>();
+
+        // Check if the username already exists
+        if (personRepository.findByUserName(person.getUserName()).isPresent()) {
             map.put(false, "Username already exists");
             return map;
         }
+
+        // Create a new Person object and hash the password
+        Person newPerson = new Person();
         newPerson.setUserName(person.getUserName());
         newPerson.setPassword(passwordEncoder.encode(person.getPassword()));  // Hash the password before saving
         newPerson.setEmail(person.getEmail());
         newPerson.setFname(person.getFname());
         newPerson.setLname(person.getLname());
-        this.personRepository.save(newPerson);
 
+        // Save the person
+        personRepository.save(newPerson);
+
+        // Create and assign a new Act (role assignment)
         Act newAct = new Act();
         newAct.setUserName(newPerson.getUserName());
         newAct.setRoleID(person.getRole());
         newAct.setPerson(newPerson);
-        newAct.setRole(this.roleRepository.findById(person.getRole()).get());
-        this.actRepository.save(newAct);
+        newAct.setRole(roleRepository.findById(person.getRole()).orElseThrow(() -> new IllegalArgumentException("Role not found")));
+
+        // Save the Act
+        actRepository.save(newAct);
 
         map.put(true, "Successfully registered.");
         return map;

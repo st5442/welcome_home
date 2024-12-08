@@ -1,13 +1,11 @@
 package Project3.com.welcome_home.controllers;
 
 import Project3.com.welcome_home.services.OrderService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,5 +25,32 @@ public class OrderController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/start")
+    public String startOrder(@RequestParam String loggedInUser,
+                             @RequestParam String clientUserName,
+                             @RequestParam String orderNotes,
+                             HttpSession session) {
+        try {
+            // Check if the logged-in user is staff
+            if (!orderService.isStaff(loggedInUser)) {
+                return "Error: Only staff can start an order.";
+            }
+
+            // Check if the client username exists
+            if (!orderService.isClientValid(clientUserName)) {
+                return "Error: Invalid client username.";
+            }
+
+            // Start the order
+            int orderId = orderService.startOrder(loggedInUser, clientUserName, orderNotes);
+
+            // Save the order ID in the session
+            session.setAttribute("orderId", orderId);
+            return "Order started successfully. Order ID: " + orderId;
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
 }
