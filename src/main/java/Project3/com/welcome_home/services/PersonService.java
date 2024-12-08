@@ -2,34 +2,56 @@ package Project3.com.welcome_home.services;
 
 import Project3.com.welcome_home.entities.Person;
 import Project3.com.welcome_home.entities.Act;
+import Project3.com.welcome_home.model.RegisterPersonDT;
 import Project3.com.welcome_home.repositories.PersonRepository;
 import Project3.com.welcome_home.repositories.ActRepository;
+import Project3.com.welcome_home.repositories.RoleRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PersonService {
 
     private final PersonRepository personRepository;
     private final ActRepository actRepository;
+    private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+
     @Autowired
-    public PersonService(PersonRepository personRepository, ActRepository actRepository) {
+    public PersonService(PersonRepository personRepository, ActRepository actRepository, RoleRepository roleRepository) {
         this.personRepository = personRepository;
         this.actRepository = actRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.roleRepository = roleRepository;
     }
 
     // Register a user (salt and hash the password)
-    public Person registerUser(Person person) {
-        person.setPassword(passwordEncoder.encode(person.getPassword()));  // Hash the password before saving
-        return personRepository.save(person);
+    public Map<Boolean, String> registerUser(RegisterPersonDT person) {
+        HashMap map = new HashMap<Boolean, String>();
+        Person newPerson = new Person();
+        if(personRepository.findByUserName(person.getUserName()).isPresent()) {
+            map.put(false, "Username already exists");
+        }
+        newPerson.setUserName(person.getUserName());
+        newPerson.setPassword(passwordEncoder.encode(person.getPassword()));  // Hash the password before saving
+        newPerson.setEmail(person.getEmail());
+        newPerson.setFname(person.getFname());
+        newPerson.setLname(person.getLname());
+        this.personRepository.save(newPerson);
+
+        Act newAct = new Act();
+        newAct.setUserName(newPerson.getUserName());
+        newAct.setRoleID(person.getRole());
+        newAct.setPerson(newPerson);
+        newAct.setRole(this.roleRepository.findById(person.getRole()).get());
+        this.actRepository.save(newAct);
+
+        map.put(true, "Successfully registered.");
+        return map;
     }
 
     // Find user by username
