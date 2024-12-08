@@ -1,6 +1,8 @@
 package Project3.com.welcome_home.controllers;
 
 import Project3.com.welcome_home.entities.Item;
+import Project3.com.welcome_home.model.CategoryDT;
+import Project3.com.welcome_home.model.ItemDT;
 import Project3.com.welcome_home.services.ItemService;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +31,10 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public Item getItemById(@PathVariable Integer itemId) {
         return itemService.getItemById(itemId);
+    }
+
+    @GetMapping("/filter")
+    public List<ItemDT> getItemsByCategoryAndSubcategory(@RequestBody List<CategoryDT> categories) {
+        return itemService.getItemsByCategoryAndSubcategory(categories);
     }
 }
