@@ -36,6 +36,7 @@ public class OrderRepository {
         return jdbcTemplate.queryForList(sql, orderID);
     }
 
+
     public List<Map<String, Object>> findOrderItemsForClient(String userName) {
         String sql = """
                 select 
@@ -77,4 +78,29 @@ public class OrderRepository {
                 """;
         return jdbcTemplate.queryForList(sql, userName);
     }
-}
+        // Check if the logged-in user is a staff member
+        public boolean isStaff (String userName){
+            String sql = "SELECT COUNT(*) FROM Act WHERE userName = ? AND roleID = 'STAFF'";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userName);
+            return count != null && count > 0;
+        }
+
+        // Check if the client username exists
+        public boolean isClientValid (String clientUserName){
+            String sql = "SELECT COUNT(*) FROM Person WHERE userName = ?";
+            Integer count = jdbcTemplate.queryForObject(sql, Integer.class, clientUserName);
+            return count != null && count > 0;
+        }
+
+        // Insert a new order
+        public void insertOrder (String orderNotes, String supervisor, String clientUserName){
+            String sql = "INSERT INTO Ordered (orderDate, orderNotes, supervisor, client) VALUES (CURDATE(), ?, ?, ?)";
+            jdbcTemplate.update(sql, orderNotes, supervisor, clientUserName);
+        }
+
+        // Retrieve the last inserted order ID
+        public int getLastOrderId () {
+            String sql = "SELECT LAST_INSERT_ID() AS orderID";
+            return jdbcTemplate.queryForObject(sql, Integer.class);
+        }
+    }
