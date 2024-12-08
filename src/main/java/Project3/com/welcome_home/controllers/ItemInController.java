@@ -1,15 +1,10 @@
 package Project3.com.welcome_home.controllers;
 
-import Project3.com.welcome_home.entities.Item;
 import Project3.com.welcome_home.entities.ItemIn;
-import Project3.com.welcome_home.model.ItemDT;
-import Project3.com.welcome_home.model.ItemOrderDT;
 import Project3.com.welcome_home.services.ItemInService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -40,10 +35,5 @@ public class ItemInController {
     @DeleteMapping("/{itemID}/{orderID}")
     public void deleteItemIn(@PathVariable Integer itemID, @PathVariable Integer orderID) {
         itemInService.deleteItemIn(itemID, orderID);
-    }
-
-    @PostMapping("/addItemInOrder")
-    public Map<Boolean, String> addItemInOrder(@RequestBody ItemOrderDT itemOrderDT) {
-        return itemInService.addItemInOrder(itemOrderDT);
     }
 }

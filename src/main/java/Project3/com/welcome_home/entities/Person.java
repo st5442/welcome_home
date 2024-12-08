@@ -1,26 +1,22 @@
 package Project3.com.welcome_home.entities;
 
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "Person")
 public class Person {
 
     @Id
-    @Column(name = "userName", nullable = false)
     private String userName;
-
-    @Column(name = "password", nullable = false)
     private String password;
-
-    @Column(name = "fname", nullable = false)
     private String fname;
-
-    @Column(name = "lname", nullable = false)
     private String lname;
-
-    @Column(name = "email", nullable = false)
     private String email;
+
+    // Many-to-many relationship with roles
+    @OneToMany(mappedBy = "person")
+    private Set<Act> roles;  // The roles associated with the person
 
     // Getters and Setters
     public String getUserName() {
@@ -61,5 +57,18 @@ public class Person {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<Act> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Act> roles) {
+        this.roles = roles;
+    }
+
+    // Optional: Add a method to get the roleID directly if needed
+    public String getRoleID() {
+        return roles != null && !roles.isEmpty() ? roles.iterator().next().getRole().getRoleID() : null;
     }
 }

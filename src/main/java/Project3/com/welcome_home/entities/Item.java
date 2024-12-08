@@ -35,7 +35,7 @@ public class Item {
     @Column(name = "subCategory", insertable = false, updatable = false)
     private String subCategory;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "mainCategory", referencedColumnName = "mainCategory", nullable = false),
             @JoinColumn(name = "subCategory", referencedColumnName = "subCategory", nullable = false)

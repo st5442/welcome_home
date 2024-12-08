@@ -1,16 +1,14 @@
 package Project3.com.welcome_home.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Role")
 public class Role {
-
     @Id
-    @Column(name = "roleID", nullable = false)
     private String roleID;
-
-    @Column(name = "rDescription")
     private String rDescription;
 
     // Getters and Setters

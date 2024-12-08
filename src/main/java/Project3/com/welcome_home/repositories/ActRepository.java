@@ -13,6 +13,6 @@ public interface ActRepository extends JpaRepository<Act, ActId> {
     @Query(value = "select a.roleID from Act a where a.userName=:userName", nativeQuery = true)
     Optional<List<Query4b>> findRoleIDListByUserName(String userName);
 
-    @Query(value = "SELECT * FROM Act a where a.userName=:username", nativeQuery = true)
-    Optional<List<Act>> findByUserName(String username);
+    @Query("SELECT a FROM Act a WHERE a.person.userName = :userName")
+    Optional<String> findRoleByUserName(String userName);
 }
