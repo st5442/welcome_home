@@ -1,6 +1,7 @@
 package Project3.com.welcome_home.controllers;
 
 import Project3.com.welcome_home.commons.Constants;
+import Project3.com.welcome_home.model.PrepareOrderDT;
 import Project3.com.welcome_home.model.UserDetails;
 import Project3.com.welcome_home.services.OrderService;
 import jakarta.servlet.http.HttpSession;
@@ -71,10 +72,10 @@ public class OrderController {
     }
 
     @PostMapping("/prepare")
-    public ResponseEntity<String> prepareOrder(@RequestParam int orderID, @RequestParam String clientUsername) {
+    public ResponseEntity<String> prepareOrder(@RequestBody PrepareOrderDT orderDT) {
         try {
             // Call the service to prepare the order and return appropriate response
-            String response = orderService.prepareOrder(orderID, clientUsername);
+            String response = orderService.prepareOrder(orderDT);
 
             if ("Order is ready for delivery.".equals(response)) {
                 return ResponseEntity.status(HttpStatus.OK).body(response);

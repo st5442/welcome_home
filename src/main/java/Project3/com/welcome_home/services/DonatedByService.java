@@ -8,6 +8,7 @@ import Project3.com.welcome_home.model.Query4b;
 import Project3.com.welcome_home.repositories.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -79,6 +80,13 @@ public class DonatedByService {
                         pieceRepository.save(piece);
                     }
                 }
+                DonatedBy donatedBy = new DonatedBy();
+                donatedBy.setItemID(itemId);
+                donatedBy.setUserName(personUsrName);
+                LocalDate date = LocalDate.now();
+                java.sql.Date sqlDate = java.sql.Date.valueOf(date);
+                donatedBy.setDonateDate(sqlDate);
+                donatedByRepository.save(donatedBy);
                 map.put(true, "Successfully added item.");
                 return map;
             }
