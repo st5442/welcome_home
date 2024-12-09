@@ -14,18 +14,15 @@ public class Location {
     @Column(name = "shelfNum")
     private int shelfNum;
 
-    @Column(name = "shelf")
-    private String shelf;
     @Column(name = "shelfDescription")
     private String shelfDescription;
 
     public Location() {
     }
 
-    public Location(int roomNum, int shelfNum, String shelf, String shelfDescription) {
+    public Location(int roomNum, int shelfNum, String shelfDescription) {
         this.roomNum = roomNum;
         this.shelfNum = shelfNum;
-        this.shelf = shelf;
         this.shelfDescription = shelfDescription;
     }
 
@@ -43,14 +40,6 @@ public class Location {
 
     public void setShelfNum(int shelfNum) {
         this.shelfNum = shelfNum;
-    }
-
-    public String getShelf() {
-        return shelf;
-    }
-
-    public void setShelf(String shelf) {
-        this.shelf = shelf;
     }
 
     public String getShelfDescription() {
