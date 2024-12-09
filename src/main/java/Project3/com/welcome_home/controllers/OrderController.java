@@ -43,31 +43,47 @@ public class OrderController {
         return ResponseEntity.ok(result);
     }
 
-        @PostMapping("/start")
-        public String startOrder (@RequestParam String loggedInUser,
-                @RequestParam String clientUserName,
-                @RequestParam String orderNotes,
-                HttpSession session){
-            try {
-                // Check if the logged-in user is staff
-                if (!orderService.isStaff(loggedInUser)) {
-                    return "Error: Only staff can start an order.";
-                }
-
-                // Check if the client username exists
-                if (!orderService.isClientValid(clientUserName)) {
-                    return "Error: Invalid client username.";
-                }
-
-                // Start the order
-                int orderId = orderService.startOrder(loggedInUser, clientUserName, orderNotes);
-
-                // Save the order ID in the session
-                session.setAttribute("orderId", orderId);
-                return "Order started successfully. Order ID: " + orderId;
-            } catch (Exception e) {
-                return "Error: " + e.getMessage();
+    @PostMapping("/start")
+    public String startOrder(@RequestParam String loggedInUser,
+                             @RequestParam String clientUserName,
+                             @RequestParam String orderNotes,
+                             HttpSession session) {
+        try {
+            // Check if the logged-in user is staff
+            if (!orderService.isStaff(loggedInUser)) {
+                return "Error: Only staff can start an order.";
             }
+
+            // Check if the client username exists
+            if (!orderService.isClientValid(clientUserName)) {
+                return "Error: Invalid client username.";
+            }
+
+            // Start the order
+            int orderId = orderService.startOrder(loggedInUser, clientUserName, orderNotes);
+
+            // Save the order ID in the session
+            session.setAttribute("orderId", orderId);
+            return "Order started successfully. Order ID: " + orderId;
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
         }
     }
 
+    @PostMapping("/prepare")
+    public ResponseEntity<String> prepareOrder(@RequestParam int orderID, @RequestParam String clientUsername) {
+        try {
+            // Call the service to prepare the order and return appropriate response
+            String response = orderService.prepareOrder(orderID, clientUsername);
+
+            if ("Order is ready for delivery.".equals(response)) {
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
+}
