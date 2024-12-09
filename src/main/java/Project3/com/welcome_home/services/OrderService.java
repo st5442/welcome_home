@@ -49,7 +49,7 @@ public class OrderService {
     public String prepareOrder(int orderID, String clientUsername) {
         // Step 1: Fetch items for the given orderID or clientUsername
         String findOrderSql = "SELECT o.orderID, ii.ItemID, p.pieceNum, l.roomNum, l.shelfNum " +
-                "FROM `Ordered` o " +
+                "FROM Ordered o " +
                 "JOIN ItemIn ii ON o.orderID = ii.orderID " +
                 "JOIN Piece p ON ii.ItemID = p.ItemID " +
                 "JOIN Location l ON p.roomNum = l.roomNum AND p.shelfNum = l.shelfNum " +
@@ -71,7 +71,9 @@ public class OrderService {
         }
 
         // Step 2: Update item locations to "holding location"
-        String holdingLocationSql = "UPDATE PieceIn SET roomNum = ?, shelfNum = ?, notes = 'Ready for delivery' WHERE ItemID = ? AND pieceNum = ?";
+        String addnewLocation = "INSERT INTO Location VALUES (99, 99, \'Shelf99\', \'Shelf99\')";
+        jdbcTemplate.execute(addnewLocation);
+        String holdingLocationSql = "UPDATE Piece SET roomNum = ?, shelfNum = ?, pNotes = 'Ready for delivery' WHERE ItemID = ? AND pieceNum = ?";
         for (ItemDetails item : items) {
             // Assuming holding location is room 99, shelf 99 (adjust as needed)
             jdbcTemplate.update(holdingLocationSql, 99, 99, item.getItemID(), item.getPieceNum());
