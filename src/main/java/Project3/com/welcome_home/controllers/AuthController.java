@@ -2,6 +2,7 @@ package Project3.com.welcome_home.controllers;
 
 import Project3.com.welcome_home.entities.Person;
 import Project3.com.welcome_home.model.RegisterPersonDT;
+import Project3.com.welcome_home.model.UserDetails;
 import Project3.com.welcome_home.services.PersonService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class AuthController {
 
     private final PersonService personService;
+    private UserDetails userDetails;
 
     public HttpSession getSession() {
         return this.session;
@@ -24,8 +26,9 @@ public class AuthController {
 
     private HttpSession session;
 
-    public AuthController(PersonService personService) {
+    public AuthController(PersonService personService, UserDetails userDetails) {
         this.personService = personService;
+        this.userDetails = userDetails;
     }
 
     // Register a new user
@@ -54,6 +57,8 @@ public class AuthController {
                 session.setAttribute("user", person.getUserName());
                 session.setAttribute("role", person.getRoleID()); // assuming role is set in Person entity
                 this.session = session;
+                this.userDetails.setUserName(person.getUserName());
+                this.userDetails.setRoleID(person.getRoleID());
 
                 body.put("userName", person.getUserName());
                 body.put("role", person.getRoleID());
@@ -76,7 +81,9 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
         session.invalidate();
-        this.session = session;// Destroy session
+        this.session = session; // Destroy session
+        this.userDetails.setUserName(null);
+        this.userDetails.setRoleID(null);
         return ResponseEntity.ok("Logged out successfully");
     }
 }

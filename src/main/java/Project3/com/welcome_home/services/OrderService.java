@@ -1,5 +1,6 @@
 package Project3.com.welcome_home.services;
 
+import Project3.com.welcome_home.commons.Constants;
 import Project3.com.welcome_home.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,14 @@ public class OrderService {
         return orderRepository.findOrderItemsWithLocations(orderID);
     }
 
+    public List<Map<String, Object>> showOrders(String userName, String roleID) {
+        if(roleID.equals(Constants.donorKey)){
+            return orderRepository.findOrderItemsForClient(userName);
+        } else if(roleID.equals(Constants.staffKey)){
+            return orderRepository.findOrderItemsForSupervisor(userName);
+        }
+        return null;
+    }
     // Check if the logged-in user is a staff member
     public boolean isStaff(String userName) {
         return orderRepository.isStaff(userName);
