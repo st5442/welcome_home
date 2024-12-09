@@ -1,6 +1,7 @@
 package Project3.com.welcome_home.services;
 
 import Project3.com.welcome_home.commons.Constants;
+import Project3.com.welcome_home.commons.PersonRoles;
 import Project3.com.welcome_home.entities.*;
 import Project3.com.welcome_home.model.ItemOrderDT;
 import Project3.com.welcome_home.repositories.*;
@@ -84,7 +85,7 @@ public class ItemInService {
         Optional<List<Act>> staffAct = actRepository.findByUserName(itemOrderDT.supervisor);
         if(staffAct.isPresent()) {
             for (Act act : staffAct.get()) {
-                if(act.getRoleID().equals(Constants.staffKey)) {
+                if(act.getRoleID().equals(Constants.staffKey) || act.getRoleID().equals(PersonRoles.SUPERVISOR.toString())) {
                     Person person = personRepository.findPersonByUserName(act.getUserName()).get();
                     ordered.setSupervisor(person);
                 }
