@@ -28,4 +28,8 @@ public class PageController {
     public String findItemPage() {
         return "find-item";  // This will map to dashboard.html in templates folder
     }
+    @GetMapping("/donate")
+    public String donatePage() {
+        return "donate";  // This will map to dashboard.html in templates folder
+    }
 }
