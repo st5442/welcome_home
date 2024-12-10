@@ -1,42 +1,124 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Start Order</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .form-footer {
+      margin-top: 20px;
+    }
+
+    .form-footer a {
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <script>
+    async function startOrder(event) {
+      event.preventDefault();
+
+      const formData = {
+        loggedInUser: localStorage.getItem("userName"),
+        clientUserName: document.getElementById("clientUserName").value,
+        orderNotes: document.getElementById("orderNotes").value,
+      };
+
+      const params = new URLSearchParams(formData).toString();
+
+      const response = await fetch("/api/orders/start?" + params, {
+        method: 'POST',
+      });
+
+      const result = await response.text();
+      if (response.ok) {
+        alert(result);  // Order started successfully
+      } else {
+        alert(result);  // Error message
+      }
+    }
+  </script>
 </head>
 <body>
-<div class="container mt-5">
-  <h2>Start an Order</h2>
+<div class="form-container">
+  <h1>Start Order</h1>
+  <form onsubmit="startOrder(event)">
+    <!-- Hidden input for the logged-in user (retrieved from session or auth) -->
+    <input type="hidden" id="loggedInUser" name="loggedInUser" th:value="${loggedInUser}" />
 
-  <!-- Form for starting the order -->
-  <form action="/api/orders/start" method="POST" th:object="${orderForm}">
-    <!-- Hidden field to send the logged-in username -->
-    <input type="hidden" th:value="${loggedInUser}" name="loggedInUser">
+    <label for="clientUserName">Client Username:</label>
+    <input type="text" id="clientUserName" name="clientUserName" required />
 
-    <div class="form-group">
-      <label for="clientUserName">Client Username:</label>
-      <input type="text" class="form-control" id="clientUserName" name="clientUserName" placeholder="Enter client's username" required>
-    </div>
+    <label for="orderNotes">Order Notes:</label>
+    <textarea id="orderNotes" name="orderNotes" rows="4" required></textarea>
 
-    <div class="form-group">
-      <label for="orderNotes">Order Notes:</label>
-      <textarea class="form-control" id="orderNotes" name="orderNotes" rows="3" placeholder="Enter any notes for the order"></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Start Order</button>
+    <button type="submit">Start Order</button>
   </form>
 
-  <!-- Displaying response or error messages -->
-  <div th:if="${orderStatus != null}" class="mt-3">
-    <div th:class="${orderStatus.contains('Error') ? 'alert alert-danger' : 'alert alert-success'}" role="alert">
-      <span th:text="${orderStatus}"></span>
-    </div>
+  <div class="form-footer">
+    <a href="/dashboard">Back to Dashboard</a>
   </div>
 </div>
-
-<!-- Bootstrap JS for optional interactive behavior -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
