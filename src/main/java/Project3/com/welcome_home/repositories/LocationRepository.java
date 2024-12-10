@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, LocationId> {
-    @Query(value = "select p.ItemID, p.pieceNum, p.pDescription, l.roomNum, l.shelfNum, l.shelfDescription from Piece p join Location l on p.roomNum = l.roomNum where p.ItemID=:itemId", nativeQuery = true)
+    @Query(value = "select distinct p.ItemID, p.pieceNum, p.pDescription, l.roomNum, l.shelfNum, l.shelfDescription from Piece p join Location l on p.roomNum = l.roomNum where p.ItemID=:itemId", nativeQuery = true)
     Optional<List<Query2>> findLocationsCustomByItemId(@Param("itemId") Integer itemId);
 
     @Query(value = "SELECT * from Location l where l.roomNum=:roomNum and l.shelfNum=:shelfNum", nativeQuery = true)
