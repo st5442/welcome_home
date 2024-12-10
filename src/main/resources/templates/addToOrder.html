@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add to Current Order</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #items-container {
+      margin-top: 20px;
+      text-align: left;
+      font-size: 1rem;
+    }
+
+    .item {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .item button {
+      margin-top: 10px;
+      width: auto;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Fetch main categories and subcategories
+      $.get("/api/categories", function (data) {
+        const mainCategories = [...new Set(data.map(category => category.mainCategory))];
+        const subCategoriesMap = {};
+
+        data.forEach(category => {
+          if (!subCategoriesMap[category.mainCategory]) {
+            subCategoriesMap[category.mainCategory] = [];
+          }
+          subCategoriesMap[category.mainCategory].push(category.subCategory);
+        });
+
+        // Populate main category dropdown
+        mainCategories.forEach(mainCategory => {
+          $('#mainCategory').append(`<option value="${mainCategory}">${mainCategory}</option>`);
+        });
+
+        // Handle subcategory population on main category change
+        $('#mainCategory').on('change', function () {
+          const selectedMainCategory = $(this).val();
+          const subCategories = subCategoriesMap[selectedMainCategory] || [];
+
+          $('#subCategory').empty().append('<option value="" disabled selected>Select Sub Category</option>');
+          subCategories.forEach(subCategory => {
+            $('#subCategory').append(`<option value="${subCategory}">${subCategory}</option>`);
+          });
+        });
+      });
+
+      // Fetch and display items based on selected category and subcategory
+      $('#subCategory').on('change', function () {
+        const selectedMainCategory = $('#mainCategory').val();
+        const selectedSubCategory = $(this).val();
+
+        if (selectedMainCategory && selectedSubCategory) {
+          $.ajax({
+            url: '/api/items/filter',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify([
+              {
+                mainCategory: selectedMainCategory,
+                subCategory: selectedSubCategory
+              }
+            ]),
+            success: function (items) {
+              $('#items-container').empty(); // Clear previous items
+              if (items.length === 0) {
+                $('#items-container').append('<p>No items available for this category/subcategory.</p>');
+              } else {
+                items.forEach(item => {
+                  $('#items-container').append(`
+          <div class="item" id="item-${item.itemId}">
+            <img src="${item.photo}" alt="${item.iDescription}" />
+            <p><strong>${item.iDescription}</strong></p>
+            <p>${item.color}</p>
+            <p>${item.material}</p>
+            <button onclick="addItemToOrder(${item.itemId})">Add to Order</button>
+          </div>
+        `);
+                });
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.log("Error fetching items:", textStatus, errorThrown);
+              $('#items-container').append('<p>Error fetching items. Please try again later.</p>');
+            }
+          });
+        }
+      });
+    });
+
+    // Add item to the order
+    function addItemToOrder(itemID) {
+      const client = localStorage.getItem("userName") || "guest";
+      const supervisor = $('#supervisor').val();
+      const notes = $('#notes').val();
+
+      $.ajax({
+        url: '/api/itemins/addItemInOrder',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          ItemID: itemID,
+          client: client,
+          supervisor: supervisor,
+          notes: notes
+        }),
+        success: function (response) {
+          if (response.true) {
+            alert(response.true);
+            $(`#item-${itemID} button`).text('Ordered').prop('disabled', true);
+          } else {
+            alert("Failed to add item to order.");
+          }
+        },
+        error: function () {
+          alert("Error occurred while adding item to order.");
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+<div class="form-container">
+  <h1>Add to Current Order</h1>
+  <form>
+    <label for="supervisor">Supervisor Name:</label>
+    <input type="text" id="supervisor" name="supervisor" required />
+
+    <label for="notes">Order Notes:</label>
+    <textarea id="notes" name="notes" rows="4" required></textarea>
+
+    <label for="mainCategory">Main Category:</label>
+    <select id="mainCategory" name="mainCategory" required>
+      <option value="" disabled selected>Loading Categories...</option>
+    </select>
+
+    <label for="subCategory">Subcategory:</label>
+    <select id="subCategory" name="subCategory" required>
+      <option value="" disabled selected>Select Sub Category</option>
+    </select>
+  </form>
+
+  <div id="items-container">
+    <h3>Available Items</h3>
+  </div>
+</div>
+</body>
+</html>

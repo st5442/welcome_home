@@ -36,6 +36,7 @@ public class PageController {
     public String showDashboardPage() {
         return "dashboard";  // This will map to dashboard.html in templates folder
     }
+
     @GetMapping("/donor-dashboard")
     public String showDonorDashboardPage() {
         return "donor-dashboard";  // This will map to dashboard.html in templates folder
@@ -49,6 +50,7 @@ public class PageController {
         // model.addAttribute("someAttribute", someValue);
         return "findOrderItems"; // Returns the 'findOrderItems.html' page
     }
+
     @GetMapping("/find-item")
     public String findItemPage() {
         return "find-item";  // This will map to dashboard.html in templates folder
@@ -58,15 +60,23 @@ public class PageController {
     public String startOrderPage() {
         return "start-order";  // This will map to dashboard.html in templates folder
     }
+
     @GetMapping("/donate")
     public String donatePage() {
         return "donate";  // This will map to dashboard.html in templates folder
     }
+
     @GetMapping("/prepare-order")
     public String prepareOrderPage() {
         return "prepare-order";  // This will map to dashboard.html in templates folder
     }
+
+    @GetMapping("/add-to-order")
+    public String showAddToOrderPage(HttpSession session, Model model) {
+        return "addToOrder";
+    }
 }
+
 
 
 

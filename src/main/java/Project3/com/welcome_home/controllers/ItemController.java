@@ -33,7 +33,7 @@ public class ItemController {
         return itemService.getItemById(itemId);
     }
 
-    @GetMapping("/filter")
+    @PostMapping("/filter")
     public List<ItemDT> getItemsByCategoryAndSubcategory(@RequestBody List<CategoryDT> categories) {
         return itemService.getItemsByCategoryAndSubcategory(categories);
     }
