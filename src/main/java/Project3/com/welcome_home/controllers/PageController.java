@@ -36,4 +36,8 @@ public class PageController {
             // model.addAttribute("someAttribute", someValue);
             return "findOrderItems"; // Returns the 'findOrderItems.html' page
     }
+    @GetMapping("/find-item")
+    public String findItemPage() {
+        return "find-item";  // This will map to dashboard.html in templates folder
+    }
 }
