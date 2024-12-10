@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prepare Order</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+        }
+        .navbar {
+            background-color: #007bff;
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 500px;
+            margin: 50px auto;
+        }
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .form-text {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="/dashboard">Dashboard</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/find-item">Find Item</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/accept-donation">Accept Donation</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/prepare-order">Prepare Order</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <h2 class="form-title">Prepare Order</h2>
+    <form id="prepareOrderForm">
+        <div class="form-group">
+            <label for="orderID">Order Number</label>
+            <input type="number" class="form-control" id="orderID" name="orderID" placeholder="Enter order ID">
+        </div>
+        <div class="form-group">
+            <label for="userName">Client Username</label>
+            <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter client's username">
+        </div>
+        <small class="form-text">At least one field (Order Number or Client Username) must be filled.</small>
+        <button type="submit" class="btn btn-primary mt-3">Prepare Order</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Submit form
+        $('#prepareOrderForm').submit(function (event) {
+            event.preventDefault();
+
+            const orderID = $('#orderID').val();
+            const userName = $('#userName').val();
+
+            // Validate: At least one field must be filled
+            if (!orderID && !userName) {
+                alert('Please enter either Order Number or Client Username.');
+                return;
+            }
+
+            const prepareOrderDT = {
+                orderID: orderID ? parseInt(orderID) : -1, // Default to -1 if not provided
+                userName: userName || null // Default to null if not provided
+            };
+
+            $.ajax({
+                url: '/api/orders/prepare',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(prepareOrderDT),
+                success: function (response) {
+                    alert(response); // Show success message
+                    $('#prepareOrderForm')[0].reset(); // Reset the form
+                },
+                error: function (error) {
+                    if (error.responseText) {
+                        alert(error.responseText); // Show error response
+                    } else {
+                        alert('An error occurred while preparing the order.');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

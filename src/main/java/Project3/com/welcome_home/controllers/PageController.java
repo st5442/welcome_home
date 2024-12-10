@@ -32,4 +32,8 @@ public class PageController {
     public String donatePage() {
         return "donate";  // This will map to dashboard.html in templates folder
     }
+    @GetMapping("/prepare-order")
+    public String prepareOrderPage() {
+        return "prepare-order";  // This will map to dashboard.html in templates folder
+    }
 }

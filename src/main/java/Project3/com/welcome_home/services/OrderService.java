@@ -86,6 +86,7 @@ public class OrderService {
                         "WHERE d.userName = ?";
                 items = jdbcTemplate.query(findOrderSql, new Object[]{orderDT.getOrderID()}, (rs, rowNum) -> {
                     ItemDetails item = new ItemDetails();
+                    orderDT.setOrderID(rs.getInt("orderID"));
                     item.setItemID(rs.getInt("ItemID"));
                     item.setPieceNum(rs.getInt("pieceNum"));
                     item.setRoomNum(rs.getInt("roomNum"));
@@ -99,6 +100,7 @@ public class OrderService {
                         "WHERE d.userName = ?";
                 items = jdbcTemplate.query(findOrderSql, new Object[]{orderDT.getUserName()}, (rs, rowNum) -> {
                     ItemDetails item = new ItemDetails();
+                    orderDT.setOrderID(rs.getInt("orderID"));
                     item.setItemID(rs.getInt("ItemID"));
                     item.setPieceNum(-1);
                     item.setRoomNum(-1);
