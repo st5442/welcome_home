@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find Order Items</title>
   <style>
+    /* Styles for the form and layout */
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f9;
@@ -14,6 +15,25 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background-color: #333;
+      width: 100%;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    .navbar a {
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+    }
+
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
     }
 
     .form-container {
@@ -87,6 +107,37 @@
     }
   </style>
   <script>
+    // Role-based navbar logic
+    function updateNavbar() {
+      const userRole = localStorage.getItem("role"); // Get the role from localStorage
+      const navbar = document.getElementById("navbar");
+
+      // Clear the current navbar content
+      navbar.innerHTML = '';
+
+      if (userRole === "donor") {
+        navbar.innerHTML = `
+          <a href="/donor-dashboard">Donor Dashboard</a>
+        `;
+      } else {
+        navbar.innerHTML = `
+          <a href="/dashboard">Dashboard</a>
+        `;
+      }
+    }
+
+    // Role-based access control (RBAC)
+    function checkUserRole() {
+      const userRole = localStorage.getItem("role"); // Get the role from localStorage
+      if (userRole === "donor") {
+        // Show content for donors (e.g., the "Find Order Items" form)
+        document.getElementById("orderIDSection").style.display = "block";
+      } else {
+        // Hide content for non-donors
+        document.getElementById("orderIDSection").style.display = "block";
+      }
+    }
+
     async function fetchOrderItems() {
       const orderID = document.getElementById("orderID").value;
       if (!orderID) {
@@ -142,10 +193,22 @@
 
       resultContainer.appendChild(table);
     }
+
+    // Initialize the page
+    window.onload = function() {
+      updateNavbar(); // Update the navbar based on the role
+      checkUserRole(); // Check the user's role for access control
+    };
   </script>
 </head>
 <body>
-<div class="form-container">
+<!-- Navbar (dynamic content will be injected here based on user role) -->
+<div class="navbar" id="navbar">
+
+  <!-- Navbar links will be injected dynamically here -->
+</div>
+
+<div class="form-container" id="orderIDSection" style="display: none;">
   <h1>Find Order Items</h1>
   <label for="orderID">Enter Order ID:</label>
   <input type="text" id="orderID" name="orderID" required>

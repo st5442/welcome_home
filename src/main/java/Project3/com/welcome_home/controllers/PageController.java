@@ -66,6 +66,10 @@ public class PageController {
     public String prepareOrderPage() {
         return "prepare-order";  // This will map to dashboard.html in templates folder
     }
+    @GetMapping("/show-orders")
+    public String showOrdersPage(Model model) {
+        return "show-orders";  // This will map to dashboard.html in templates folder
+    }
 }
 
 

@@ -126,9 +126,8 @@
 
 <!-- Navbar -->
 <nav>
-    <a href="/dashboard">Dashboard</a>
+    <a href="#" id="dashboardLink">Dashboard</a>
     <a href="/find-item">Search Item Locations</a>
-    <a href="/donate">Accept donation</a>
 </nav>
 
 <div class="container">
@@ -148,6 +147,18 @@
 </div>
 
 <script>
+    // Set the appropriate dashboard link based on the user's role
+    document.addEventListener("DOMContentLoaded", function () {
+        const userRole = localStorage.getItem("role");
+        const dashboardLink = document.getElementById("dashboardLink");
+
+        if (userRole === "donor") {
+            dashboardLink.setAttribute("href", "/donor-dashboard");
+        } else {
+            dashboardLink.setAttribute("href", "/dashboard");
+        }
+    });
+
     async function findItemLocations() {
         const itemId = document.getElementById("itemId").value;
         const errorMessageDiv = document.getElementById("error-message");
@@ -182,12 +193,12 @@
                     card.classList.add("card");
 
                     card.innerHTML = `
-              <p><span class="highlight">Room Number:</span> ${location.roomNum}</p>
-              <p><span class="highlight">Shelf Number:</span> ${location.shelfNum}</p>
-              <p><span class="highlight">Shelf Description:</span> ${location.shelfDescription}</p>
-              <p><span class="highlight">Piece Description:</span> ${location.pdescription}</p>
-              <p><span class="highlight">Piece Number:</span> ${location.pieceNum}</p>
-            `;
+                        <p><span class="highlight">Room Number:</span> ${location.roomNum}</p>
+                        <p><span class="highlight">Shelf Number:</span> ${location.shelfNum}</p>
+                        <p><span class="highlight">Shelf Description:</span> ${location.shelfDescription}</p>
+                        <p><span class="highlight">Piece Description:</span> ${location.pdescription}</p>
+                        <p><span class="highlight">Piece Number:</span> ${location.pieceNum}</p>
+                    `;
 
                     itemLocationsDiv.appendChild(card);
                 });
@@ -197,5 +208,6 @@
         }
     }
 </script>
+
 </body>
 </html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Order Items</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        /* Form container and other styles as before */
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-container {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 1rem;
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+
+        .result-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .result-container th, .result-container td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .result-container th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        // Role-based navbar logic
+        function updateNavbar() {
+            const role = localStorage.getItem("role"); // Get the role from localStorage
+            const navbar = document.getElementById("navbar");
+
+            if (role === "donor") {
+                navbar.innerHTML = `
+          <a href="/donor-dashboard">Donor Dashboard</a>
+        `;
+            } else {
+                navbar.innerHTML = `
+          <a href="/dashboard">Dashboard</a>
+        `;
+            }
+        }
+
+        async function fetchOrderItems() {
+            const orderID = document.getElementById("orderID").value;
+            if (!orderID) {
+                alert("Please enter an order ID.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/orders/${orderID}/items`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    alert("Order not found.");
+                }
+            } catch (error) {
+                alert("Error fetching order items: " + error.message);
+            }
+        }
+
+        function displayResults(items) {
+            const resultContainer = document.getElementById("resultContainer");
+            resultContainer.innerHTML = "";
+
+            if (items.length === 0) {
+                resultContainer.innerHTML = "<p>No items found for this order.</p>";
+                return;
+            }
+
+            const table = document.createElement("table");
+
+            // Table headers
+            const headers = ["Item ID", "Item Description", "Piece Number", "Piece Description", "Room Number", "Shelf Number", "Shelf Description"];
+            const headerRow = document.createElement("tr");
+            headers.forEach(header => {
+                const th = document.createElement("th");
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+
+            // Table rows
+            items.forEach(item => {
+                const row = document.createElement("tr");
+                Object.values(item).forEach(value => {
+                    const td = document.createElement("td");
+                    td.textContent = value;
+                    row.appendChild(td);
+                });
+                table.appendChild(row);
+            });
+
+            resultContainer.appendChild(table);
+        }
+
+        // Initialize role-based navbar
+        window.onload = updateNavbar;
+    </script>
+</head>
+<body>
+<div class="navbar" id="navbar">
+    <!-- Navbar links will be injected here based on the role -->
+</div>
+
+<div class="form-container">
+    <h1>Find Order Items</h1>
+    <label for="orderID">Enter Order ID:</label>
+    <input type="text" id="orderID" name="orderID" required>
+    <button onclick="fetchOrderItems()">Find Items</button>
+
+    <div class="result-container" id="resultContainer"></div>
+</div>
+</body>
+</html>
