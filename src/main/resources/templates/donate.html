@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate Item</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .navbar {
+            background-color: #007bff;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .navbar-nav .nav-item + .nav-item {
+            margin-left: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .piece-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <a class="navbar-brand" href="#">Donation System</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#" th:href="@{/dashboard}">Dashboard</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#" th:href="@{/find-item}">Search Item Locations</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#" th:href="@{/donate}">Accept Donation</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="form-container">
+        <h2 class="text-center mb-4">Donate Item</h2>
+        <form action="#" method="post" id="donateForm">
+            <div class="form-group">
+                <label for="userName">Username:</label>
+                <input type="text" class="form-control" name="userName" id="userName" required>
+            </div>
+
+            <!-- Main Category Dropdown -->
+            <div class="form-group">
+                <label for="mainCategory">Main Category:</label>
+                <input type="text" class="form-control" name="mainCategory" id="mainCategory" required>
+            </div>
+
+            <!-- Sub Category Dropdown -->
+            <div class="form-group">
+                <label for="subCategory">Sub Category:</label>
+                <input type="text" class="form-control" name="subCategory" id="subCategory" required>
+            </div>
+
+            <div class="form-group">
+                <label for="iDescription">Item Description:</label>
+                <input type="text" class="form-control" name="iDescription" id="iDescription" required>
+            </div>
+
+            <div class="form-group">
+                <label for="color">Color:</label>
+                <input type="text" class="form-control" id="color" name="color">
+            </div>
+
+            <div class="form-group">
+                <label for="isNew">Is the item new?</label>
+                <select class="form-control" name="isNew" required>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hasPieces">Does the item have pieces?</label>
+                <select class="form-control" name="hasPieces" id="hasPieces" required>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <!-- Pieces Section -->
+            <div id="piecesSection" style="display: none;">
+                <h5 class="mt-4">Item Pieces</h5>
+                <div id="piecesContainer"></div>
+                <button type="button" class="btn btn-secondary mt-3" id="addPiece">Add Piece</button>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-4">Submit Donation</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Fetch categories and populate the dropdowns
+    $.get("/api/categories", function(data) {
+        const mainCategories = [...new Set(data.map(category => category.mainCategory))];
+        const subCategoriesMap = {};
+
+        data.forEach(category => {
+            if (!subCategoriesMap[category.mainCategory]) {
+                subCategoriesMap[category.mainCategory] = [];
+            }
+            subCategoriesMap[category.mainCategory].push(category.subCategory);
+        });
+
+        mainCategories.forEach(mainCategory => {
+            $('#mainCategory').append(`<option value="${mainCategory}">${mainCategory}</option>`);
+        });
+
+        $('#mainCategory').on('change', function() {
+            const selectedMainCategory = $(this).val();
+            const subCategories = subCategoriesMap[selectedMainCategory] || [];
+
+            $('#subCategory').empty().append('<option value="" disabled selected>Select Sub Category</option>');
+            subCategories.forEach(subCategory => {
+                $('#subCategory').append(`<option value="${subCategory}">${subCategory}</option>`);
+            });
+        });
+    });
+
+    // Toggle pieces section
+    $('#hasPieces').on('change', function() {
+        const hasPieces = $(this).val() === 'true';
+        $('#piecesSection').toggle(hasPieces);
+    });
+
+    // Add a new piece
+    $('#addPiece').on('click', function() {
+        const pieceHTML = `
+                <div class="piece-container">
+                    <div class="form-group">
+                        <label for="pDescription">Piece Description:</label>
+                        <input type="text" class="form-control" name="pDescription" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="length">Length:</label>
+                            <input type="number" class="form-control" name="length" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="width">Width:</label>
+                            <input type="number" class="form-control" name="width" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="height">Height:</label>
+                            <input type="number" class="form-control" name="height" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="roomNum">Room Number:</label>
+                            <input type="number" class="form-control" name="roomNum" id="roomNum" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="shelfNum">Shelf Number:</label>
+                            <input type="number" class="form-control" name="shelfNum" id="shelfNum" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pNotes">Notes:</label>
+                        <textarea class="form-control" name="pNotes"></textarea>
+                    </div>
+                </div>
+            `;
+        $('#piecesContainer').append(pieceHTML);
+    });
+
+    // Handle form submission
+    $('#donateForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const hasPieces = $('#hasPieces').val() === 'true';
+        const pieces = hasPieces ? $('#piecesContainer .piece-container').map(function() {
+            return {
+                pDescription: $(this).find('input[name="pDescription"]').val(),
+                length: $(this).find('input[name="length"]').val(),
+                width: $(this).find('input[name="width"]').val(),
+                height: $(this).find('input[name="height"]').val(),
+                pNotes: $(this).find('textarea[name="pNotes"]').val(),
+                roomNum: $(this).find('input[name="roomNum"]').val(),
+                shelfNum: $(this).find('input[name="shelfNum"]').val()
+            };
+        }).get() : null;
+
+        const formData = {
+            userName: $('input[name="userName"]').val(),
+            mainCategory: $('input[name="mainCategory"]').val(),
+            subCategory: $('input[name="subCategory"]').val(),
+            iDescription: $('input[name="iDescription"]').val(),
+            color: $('input[name="color"]').val(),
+            isNew: $('select[name="isNew"]').val(),
+            hasPieces: hasPieces,
+            pieces: hasPieces ? pieces : []
+        };
+
+        console.log(formData); // For debugging
+        // Make the API call to submit the data
+        $.ajax({
+            url: '/api/donations/madeADonation',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                alert('Donation submitted successfully!');
+            },
+            error: function(error) {
+                alert('An error occurred while submitting your donation. Please try again.');
+            }
+        });
+    });
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

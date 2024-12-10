@@ -58,7 +58,11 @@ public class PageController {
     public String startOrderPage() {
         return "start-order";  // This will map to dashboard.html in templates folder
     }
-
-
+    @GetMapping("/donate")
+    public String donatePage() {
+        return "donate";  // This will map to dashboard.html in templates folder
+    }
 }
+
+
 
