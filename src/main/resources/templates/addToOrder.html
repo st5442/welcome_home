@@ -10,10 +10,22 @@
       background-color: #f4f4f9;
       margin: 0;
       padding: 0;
+    }
+
+    nav {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      height: 100vh;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      margin: 0 10px;
     }
 
     .form-container {
@@ -22,6 +34,7 @@
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       width: 400px;
+      margin: 50px auto;
       text-align: center;
     }
 
@@ -84,6 +97,9 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function () {
+      // Setup navbar based on user role
+      setupNavbar();
+
       // Fetch main categories and subcategories
       $.get("/api/categories", function (data) {
         const mainCategories = [...new Set(data.map(category => category.mainCategory))];
@@ -136,14 +152,14 @@
               } else {
                 items.forEach(item => {
                   $('#items-container').append(`
-          <div class="item" id="item-${item.itemId}">
-            <img src="${item.photo}" alt="${item.iDescription}" />
-            <p><strong>${item.iDescription}</strong></p>
-            <p>${item.color}</p>
-            <p>${item.material}</p>
-            <button onclick="addItemToOrder(${item.itemId})">Add to Order</button>
-          </div>
-        `);
+                    <div class="item" id="item-${item.itemId}">
+                      <img src="${item.photo}" alt="${item.iDescription}" />
+                      <p><strong>${item.iDescription}</strong></p>
+                      <p>${item.color}</p>
+                      <p>${item.material}</p>
+                      <button onclick="addItemToOrder(${item.itemId})">Add to Order</button>
+                    </div>
+                  `);
                 });
               }
             },
@@ -156,7 +172,19 @@
       });
     });
 
-    // Add item to the order
+    function setupNavbar() {
+      const navbarLink = document.getElementById("dashboardLink");
+      const userRole = localStorage.getItem("role");
+
+      if (userRole === "donor") {
+        navbarLink.href = "/donor-dashboard";
+        navbarLink.textContent = "Donor Dashboard";
+      } else {
+        navbarLink.href = "/dashboard";
+        navbarLink.textContent = "Dashboard";
+      }
+    }
+
     function addItemToOrder(itemID) {
       const client = localStorage.getItem("userName") || "guest";
       const supervisor = $('#supervisor').val();
@@ -188,6 +216,10 @@
   </script>
 </head>
 <body>
+<nav>
+  <a href="#" id="dashboardLink">Dashboard</a>
+</nav>
+
 <div class="form-container">
   <h1>Add to Current Order</h1>
   <form>

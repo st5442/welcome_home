@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Delivery Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #28a745;
+        }
+        /* Navbar Styling */
+        nav {
+            width: 100%;
+            background-color: #007bff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .info {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        async function changeDeliveryStatus() {
+            const orderID = document.getElementById("orderID").value;
+            const status = document.getElementById("status").value;
+
+            if (!orderID || !status) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const requestBody = {
+                orderID: parseInt(orderID),
+                status: status
+            };
+
+            try {
+                const response = await fetch('/api/delivered/changeDeliveryStatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (response.ok) {
+                    document.getElementById("result").innerText = "Delivery status updated successfully.";
+                } else if (response.status === 403) {
+                    alert("You do not have permission to change the delivery status.");
+                } else {
+                    alert("An error occurred while updating the delivery status.");
+                }
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+    </script>
+</head>
+<body>
+
+<nav>
+    <a href="dashboard">Dashboard</a>
+    <a href="change-delivery-status">Change Delivery Status</a>
+</nav>
+
+<div class="form-container">
+    <h1>Change Delivery Status</h1>
+    <label for="orderID">Order ID:</label>
+    <input type="number" id="orderID" name="orderID" placeholder="Enter Order ID" required>
+
+    <label for="status">Select Status:</label>
+    <select id="status" name="status" required>
+        <option value="" disabled selected>Select Status</option>
+        <option value="RECEIVED">ORDER RECEIVED</option>
+        <option value="PREPARING">PREPARING</option>
+        <option value="SHIPPED">SHIPPED</option>
+        <option value="IN_TRANSIT">IN TRANSIT</option>
+        <option value="DELIVERED">DELIVERED</option>
+    </select>
+
+    <button onclick="changeDeliveryStatus()">Update Status</button>
+
+    <div id="result" class="result"></div>
+</div>
+</body>
+</html>

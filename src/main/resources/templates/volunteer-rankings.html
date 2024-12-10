@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Rankings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #007bff;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin: 0 10px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        input {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Set the navbar link based on user role
+            const role = localStorage.getItem("role");
+            const dashboardLink = role === "donor" ? "donor-dashboard" : "dashboard";
+            $('#dashboard-link').attr('href', dashboardLink);
+
+            // Fetch rankings on button click
+            $('#fetchRankings').on('click', function () {
+                const startDate = $('#startDate').val();
+                const endDate = $('#endDate').val();
+
+                if (!startDate || !endDate) {
+                    $('#error-message').text("Please provide both start and end dates.");
+                    return;
+                }
+
+                $('#error-message').text(""); // Clear any error messages
+
+                $.ajax({
+                    url: '/api/volunteer/rank',
+                    method: 'GET',
+                    data: { startDate, endDate },
+                    success: function (data) {
+                        const tableBody = $('#rankings-table tbody');
+                        tableBody.empty();
+
+                        if (data.length === 0) {
+                            tableBody.append('<tr><td colspan="3">No rankings available for this time period.</td></tr>');
+                        } else {
+                            data.forEach((entry, index) => {
+                                tableBody.append(`
+                  <tr>
+                    <td>${entry.rank}</td>
+                    <td>${entry.userName}</td>
+                    <td>${entry.taskCount}</td>
+                  </tr>
+                `);
+                            });
+                        }
+                    },
+                    error: function () {
+                        $('#error-message').text("Error fetching rankings. Please try again later.");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="navbar">
+    <a href="#" id="dashboard-link">Dashboard</a>
+    <span>Volunteer Rankings</span>
+</div>
+
+<div class="container">
+    <h1>Volunteer Rankings</h1>
+    <form>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required />
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required />
+    </form>
+    <button id="fetchRankings">Fetch Rankings</button>
+    <div class="error-message" id="error-message"></div>
+    <table id="rankings-table">
+        <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Tasks Completed</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Rankings will be dynamically added here -->
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

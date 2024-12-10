@@ -79,6 +79,15 @@ public class PageController {
     public String showOrdersPage(Model model) {
         return "show-orders";  // This will map to dashboard.html in templates folder
     }
+    @GetMapping("/change-delivery-status")
+    public String changeDeliveryStatusPage() {
+        return "change-delivery-status";  // This will map to dashboard.html in templates folder
+    }
+    @GetMapping("/volunteer-rankings")
+    public String volunteerRankingsPage() {
+        return "volunteer-rankings";  // This will map to dashboard.html in templates folder
+    }
+
 }
 
 
