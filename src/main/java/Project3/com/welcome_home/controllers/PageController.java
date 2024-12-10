@@ -75,6 +75,10 @@ public class PageController {
     public String showAddToOrderPage(HttpSession session, Model model) {
         return "addToOrder";
     }
+    @GetMapping("/show-orders")
+    public String showOrdersPage(Model model) {
+        return "show-orders";  // This will map to dashboard.html in templates folder
+    }
 }
 
 
