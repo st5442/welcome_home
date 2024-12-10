@@ -172,18 +172,18 @@
       });
     });
 
-    function setupNavbar() {
-      const navbarLink = document.getElementById("dashboardLink");
-      const userRole = localStorage.getItem("role");
-
-      if (userRole === "donor") {
-        navbarLink.href = "/donor-dashboard";
-        navbarLink.textContent = "Donor Dashboard";
-      } else {
-        navbarLink.href = "/dashboard";
-        navbarLink.textContent = "Dashboard";
-      }
-    }
+    // function setupNavbar() {
+    //   const navbarLink = document.getElementById("dashboardLink");
+    //   const userRole = localStorage.getItem("role");
+    //
+    //   if (userRole === "donor") {
+    //     navbarLink.href = "/donor-dashboard";
+    //     navbarLink.textContent = "Donor Dashboard";
+    //   } else {
+    //     navbarLink.href = "/dashboard";
+    //     navbarLink.textContent = "Dashboard";
+    //   }
+    // }
 
     function addItemToOrder(itemID) {
       const client = localStorage.getItem("userName") || "guest";
@@ -217,7 +217,7 @@
 </head>
 <body>
 <nav>
-  <a href="#" id="dashboardLink">Dashboard</a>
+  <a href="donor-dashboard" id="dashboardLink">Dashboard</a>
 </nav>
 
 <div class="form-container">
