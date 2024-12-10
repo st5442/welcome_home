@@ -2,6 +2,8 @@ package Project3.com.welcome_home.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
+
 
 @Controller
 public class PageController {
@@ -23,5 +25,15 @@ public class PageController {
     @GetMapping("/donor-dashboard")
     public String showDonorDashboardPage() {
         return "donor-dashboard";  // This will map to dashboard.html in templates folder
+    }
+
+
+
+        // Mapping for the page to find order items
+        @GetMapping("/findOrderItems")
+        public String showFindOrderItemsPage(Model model) {
+            // You can pass any data to the model if needed
+            // model.addAttribute("someAttribute", someValue);
+            return "findOrderItems"; // Returns the 'findOrderItems.html' page
     }
 }
