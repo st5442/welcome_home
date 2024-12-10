@@ -15,4 +15,13 @@ public class PageController {
     public String showLoginPage() {
         return "login"; // Maps to login.html
     }
+
+    @GetMapping("/dashboard")
+    public String showDashboardPage() {
+        return "dashboard";  // This will map to dashboard.html in templates folder
+    }
+    @GetMapping("/donor-dashboard")
+    public String showDonorDashboardPage() {
+        return "donor-dashboard";  // This will map to dashboard.html in templates folder
+    }
 }

@@ -76,7 +76,7 @@
     }
   </style>
   <script>
-    function loginUser(event) {
+    async function loginUser(event) {
       event.preventDefault();
 
       const formData = {
@@ -84,29 +84,36 @@
         password: document.getElementById("password").value,
       };
 
-      // Mock response based on username (you can extend this with other logic)
-      const response = {
-        ok: true,
-        userName: formData.userName,
-        role: formData.userName === "donor" ? "donor" : "other",
-        message: "Login successful!"
-      };
+      try {
+        // Send POST request to backend login endpoint
+        const response = await fetch("http://localhost:8080/api/auth/login?userName=" + formData.userName + "&password=" + formData.password, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-      if (response.ok) {
-        alert(`Welcome, ${response.userName}`);
+        const data = await response.json();
 
-        // Store the user info in localStorage (so it's accessible for the next page)
-        localStorage.setItem("userName", response.userName);
-        localStorage.setItem("role", response.role);
+        if (response.ok) {
+          // Store user info in localStorage for the next page
+          localStorage.setItem("userName", data.userName);
+          localStorage.setItem("role", data.role);
 
-        // Redirect based on role
-        if (response.role === "donor") {
-          window.location.href = "./donor-dashboard.html";
+
+          // Redirect based on role
+          if (data.role === "donor") {
+            window.location.href = "donor-dashboard";
+          } else {
+            window.location.href = "dashboard";
+          }
         } else {
-          window.location.href = "./dashboard.html";
+          // Display error message on login form
+          document.getElementById("error-message").textContent = data.message || "Login failed!";
         }
-      } else {
-        alert(response.message || "Login failed!");
+      } catch (error) {
+        console.error("Error during login:", error);
+        document.getElementById("error-message").textContent = "An error occurred. Please try again.";
       }
     }
   </script>
@@ -126,6 +133,7 @@
   <div class="form-footer">
     <p>Don't have an account? <a href="/register">Register here</a></p>
   </div>
+  <p id="error-message" style="color: red;"></p>
 </div>
 </body>
 </html>
