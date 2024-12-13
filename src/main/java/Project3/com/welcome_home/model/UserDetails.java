@@ -14,4 +14,5 @@ import org.springframework.web.context.annotation.SessionScope;
 public class UserDetails {
     private String userName;
     private String roleID;
+    private Integer orderID;
 }

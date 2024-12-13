@@ -1,8 +1,17 @@
 package Project3.com.welcome_home.repositories;
+import Project3.com.welcome_home.entities.Ordered;
+import Project3.com.welcome_home.services.ItemDetails;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -93,9 +102,26 @@ public class OrderRepository {
         }
 
         // Insert a new order
-        public void insertOrder (String orderNotes, String supervisor, String clientUserName){
+        @SneakyThrows
+        public Number insertOrder (String orderNotes, String supervisor, String clientUserName){
             String sql = "INSERT INTO Ordered (orderDate, orderNotes, supervisor, client) VALUES (CURDATE(), ?, ?, ?)";
-            jdbcTemplate.update(sql, orderNotes, supervisor, clientUserName);
+            Connection connection = jdbcTemplate.getDataSource().getConnection();
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(
+                    new PreparedStatementCreator() {
+                        public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                            PreparedStatement ps =
+                                    connection.prepareStatement(sql, new String[] {"id"});
+                            ps.setString(1, orderNotes);
+                            ps.setString(2, supervisor);
+                            ps.setString(3, clientUserName);
+                            return ps;
+                        }
+                    },
+                    keyHolder);
+//            jdbcTemplate.update(sql, orderNotes, supervisor, clientUserName);
+            return keyHolder.getKey();
+
         }
 
         // Retrieve the last inserted order ID
@@ -103,4 +129,20 @@ public class OrderRepository {
             String sql = "SELECT LAST_INSERT_ID() AS orderID";
             return jdbcTemplate.queryForObject(sql, Integer.class);
         }
+
+//        public Ordered getOrderByOrderID(int orderID) {
+//            Ordered o = new Ordered();
+//
+//            String sql = "SELECT * from ordered where orderID = ?";
+//            List<Ordered> os ;
+//            os = jdbcTemplate.query(sql, new Object[]{orderID}, (rs, rowNum) -> {
+//                Ordered o2 = new Ordered();
+//                o2.setOrderID(rs.getInt("orderID"));
+//                o2.setSupervisor(rs.getString("supervisor"));
+//                o2.setClient(rs.getString("client"));
+//                o2.se
+//                return item;
+//            });
+//            return jdbcTemplate.
+//        }
     }

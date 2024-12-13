@@ -5,6 +5,7 @@ import Project3.com.welcome_home.commons.PersonRoles;
 import Project3.com.welcome_home.entities.Location;
 import Project3.com.welcome_home.entities.Person;
 import Project3.com.welcome_home.model.PrepareOrderDT;
+import Project3.com.welcome_home.model.UserDetails;
 import Project3.com.welcome_home.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class OrderService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private UserDetails userDetails;
 
     public List<Map<String, Object>> getOrderItemsWithLocations(Integer orderID) {
         return orderRepository.findOrderItemsWithLocations(orderID);
@@ -50,7 +53,8 @@ public class OrderService {
     // Start the order and return the order ID
     public int startOrder(String supervisor, String clientUserName, String orderNotes) {
         // Insert the new order
-        orderRepository.insertOrder(orderNotes, supervisor, clientUserName);
+        Number id = orderRepository.insertOrder(orderNotes, supervisor, clientUserName);
+        userDetails.setOrderID(id.intValue());
 
         // Retrieve and return the order ID
         return orderRepository.getLastOrderId();

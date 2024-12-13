@@ -4,6 +4,7 @@ import Project3.com.welcome_home.commons.Constants;
 import Project3.com.welcome_home.commons.PersonRoles;
 import Project3.com.welcome_home.entities.*;
 import Project3.com.welcome_home.model.ItemOrderDT;
+import Project3.com.welcome_home.model.UserDetails;
 import Project3.com.welcome_home.repositories.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,14 +25,18 @@ public class ItemInService {
     private final PersonRepository personRepository;
     private final ItemRepository itemRepository;
     private static ObjectMapper objectMapper = new ObjectMapper();
+    private final OrderRepository orderRepository;
+    private UserDetails userDetails;
 
     public ItemInService(ItemInRepository itemInRepository, OrderedRepository orderedRepository, ActRepository actRepository,
-                         PersonRepository personRepository, ItemRepository itemRepository) {
+                         PersonRepository personRepository, ItemRepository itemRepository, UserDetails userDetails, OrderRepository orderRepository) {
         this.itemInRepository = itemInRepository;
         this.orderedRepository = orderedRepository;
         this.actRepository = actRepository;
         this.personRepository = personRepository;
         this.itemRepository = itemRepository;
+        this.userDetails = userDetails;
+        this.orderRepository = orderRepository;
     }
 
     public List<ItemIn> getAllItemIns() {
@@ -61,48 +66,48 @@ public class ItemInService {
             throw new RuntimeException(e);
         }
         HashMap map = new HashMap<Boolean, String>();
-        Ordered ordered = new Ordered();
-        LocalDate date = LocalDate.now();
-        java.sql.Date sqlDate = java.sql.Date.valueOf(date);
-        ordered.setOrderDate(sqlDate);
-        ordered.setOrderNotes(itemOrderDT.notes);
-        Optional<List<Act>> clientAct = actRepository.findByUserName(itemOrderDT.client);
-        if(clientAct.isPresent()) {
-            for (Act act : clientAct.get()) {
-                if(act.getRoleID().equals(Constants.donorKey)) {
-                    Person person = personRepository.findPersonByUserName(act.getUserName()).get();
-                    ordered.setClient(person);
-                }
-            }
-            if(ordered.getClient() == null) {
-                map.put(false, "The client is not donor.");
-                return map;
-            }
-        } else {
-            map.put(false, "No such client person.");
-            return map;
-        }
-        Optional<List<Act>> staffAct = actRepository.findByUserName(itemOrderDT.supervisor);
-        if(staffAct.isPresent()) {
-            for (Act act : staffAct.get()) {
-                if(act.getRoleID().equals(Constants.staffKey) || act.getRoleID().equals(PersonRoles.SUPERVISOR.toString())) {
-                    Person person = personRepository.findPersonByUserName(act.getUserName()).get();
-                    ordered.setSupervisor(person);
-                }
-            }
-            if(ordered.getSupervisor() == null) {
-                map.put(false, "The client is not staff member.");
-                return map;
-            }
-        } else {
-            map.put(false, "No such staff person.");
-            return map;
-        }
-        Ordered savedOrdered = orderedRepository.save(ordered);
+////        Ordered ordered = new Ordered();
+////        LocalDate date = LocalDate.now();
+////        java.sql.Date sqlDate = java.sql.Date.valueOf(date);
+////        ordered.setOrderDate(sqlDate);
+////        ordered.setOrderNotes(itemOrderDT.notes);
+//        Optional<List<Act>> clientAct = actRepository.findByUserName(itemOrderDT.client);
+//        if(clientAct.isPresent()) {
+//            for (Act act : clientAct.get()) {
+//                if(act.getRoleID().equals(Constants.donorKey)) {
+//                    Person person = personRepository.findPersonByUserName(act.getUserName()).get();
+////                    ordered.setClient(person);
+//                }
+//            }
+////            if(ordered.getClient() == null) {
+////                map.put(false, "The client is not donor.");
+////                return map;
+////            }
+//        } else {
+//            map.put(false, "No such client person.");
+//            return map;
+//        }
+//        Optional<List<Act>> staffAct = actRepository.findByUserName(itemOrderDT.supervisor);
+//        if(staffAct.isPresent()) {
+//            for (Act act : staffAct.get()) {
+//                if(act.getRoleID().equals(Constants.staffKey) || act.getRoleID().equals(PersonRoles.SUPERVISOR.toString())) {
+//                    Person person = personRepository.findPersonByUserName(act.getUserName()).get();
+//                    ordered.setSupervisor(person);
+//                }
+//            }
+//            if(ordered.getSupervisor() == null) {
+//                map.put(false, "The client is not staff member.");
+//                return map;
+//            }
+//        } else {
+//            map.put(false, "No such staff person.");
+//            return map;
+//        }
+//        Ordered savedOrdered = orderRepository.getOrderByOrderID(userDetails.getOrderID());
         ItemIn itemIn = new ItemIn();
-        itemIn.setOrderID(savedOrdered.getOrderID());
+        itemIn.setOrderID(userDetails.getOrderID());
         itemIn.setItemID(itemOrderDT.ItemID);
-        itemIn.setOrdered(ordered);
+        itemIn.setOrdered(orderedRepository.findByOrderID(userDetails.getOrderID()).get());
         Optional<Item> itemOptional = itemRepository.findByItemID(itemOrderDT.ItemID);
         if(itemOptional.isPresent()) {
             itemIn.setItem(itemOptional.get());
