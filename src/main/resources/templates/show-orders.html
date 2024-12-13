@@ -122,14 +122,9 @@
         }
 
         async function fetchOrderItems() {
-            const orderID = document.getElementById("orderID").value;
-            if (!orderID) {
-                alert("Please enter an order ID.");
-                return;
-            }
 
             try {
-                const response = await fetch(`/api/orders/${orderID}/items`);
+                const response = await fetch(`/api/orders/showOrders`);
                 const data = await response.json();
 
                 if (response.ok) {
@@ -187,10 +182,10 @@
 </div>
 
 <div class="form-container">
-    <h1>Find Order Items</h1>
-    <label for="orderID">Enter Order ID:</label>
-    <input type="text" id="orderID" name="orderID" required>
-    <button onclick="fetchOrderItems()">Find Items</button>
+<!--    <h1>Find Order Items</h1>-->
+<!--    <label for="orderID">Enter Order ID:</label>-->
+<!--    <input type="text" id="orderID" name="orderID" required>-->
+    <button onclick="fetchOrderItems()">Find Orders</button>
 
     <div class="result-container" id="resultContainer"></div>
 </div>
