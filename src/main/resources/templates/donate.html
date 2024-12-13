@@ -229,6 +229,11 @@
             pieces: hasPieces ? pieces : []
         };
 
+        if(formData.hasPieces == true && formData.pieces.length == 0){
+            alert('HasPieces option is Yes but no pieces are added.')
+            return false
+        }
+
         console.log(formData); // For debugging
         // Make the API call to submit the data
         $.ajax({
